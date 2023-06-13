@@ -1,71 +1,10 @@
 import random
 import time
 import os
-import pygame 
-pygame.init() 
 
 cardImages = []
 values = [11,2,3,4,5,6,7,8,9,10,10,10,10] # blackjack card values
 suits = ["Spades", "Clubs", "Hearts", "Diamonds"]
-
-#pygame surfaces can be blit onto screen
-cardback = pygame.image.load("source/Cards/redBack.png")
-cardSurfaceList =[]
-cardSurfaceList .append( pygame.image.load("source/Cards/ace.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/two.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/three.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/four.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/five.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/six.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/seven.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/eight.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/nine.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/ten.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/jack.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/queen.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/king.png"))
-
-cardSurfaceList .append( pygame.image.load("source/Cards/ace.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/two.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/three.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/four.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/five.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/six.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/seven.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/eight.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/nine.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/ten.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/jack.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/queen.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/king.png"))
-
-cardSurfaceList .append( pygame.image.load("source/Cards/ace.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/two.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/three.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/four.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/five.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/six.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/seven.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/eight.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/nine.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/ten.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/jack.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/queen.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/king.png"))
-
-cardSurfaceList .append( pygame.image.load("source/Cards/ace.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/two.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/three.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/four.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/five.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/six.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/seven.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/eight.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/nine.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/ten.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/jack.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/queen.png"))
-cardSurfaceList .append( pygame.image.load("source/Cards/king.png"))
 
 def find_root_dir():
   cwd = os.getcwd()
@@ -75,17 +14,15 @@ def find_root_dir():
   return cwd
 ######################################################################################################################
 class Card:
-  def __init__(self, suit, value, image, cardBack,surfaceObj=None):
+  def __init__(self, suit, value, image, cardBack):
     self.cardBack = cardBack
     self.suit = suit
     self.value = value
     self.image = image
     self.shortImage = []
-    self.surfaceObj = surfaceObj
     if self.image:
       for line in self.image:
         self.shortImage.append(line[:4])
-
 
   def __eq__(self, other):
     if not type(other) == Card:
@@ -94,7 +31,7 @@ class Card:
       self.value == other.value
 #######################################################################################################################
 class Deck:
-  def __init__(self,cardSurfaceList,deck_count=1):#by default the number of deck is one
+  def __init__(self,deck_count=1):#by default the number of deck is one
     root_dir = os.path.join( find_root_dir(), 'source')
     cards_file = f'{root_dir}{os.path.sep}playing_cards.txt'
     with open(cards_file, "r") as cards:
@@ -118,7 +55,7 @@ class Deck:
       index = 0
       for suit in suits:
         for value in values:
-          deck.append(Card(suit, value, cardImages[index], cardBack,cardSurfaceList[index]))
+          deck.append(Card(suit, value, cardImages[index], cardBack))
           index += 1
       deck_count -= 1
     self.cards = deck
@@ -150,30 +87,51 @@ def getCard(suit, value):
 
 #######################################################################################################################
 class Betting_box:
-  def __init__(self, money: int = 0, betters = []):
-    self.wager = money
-    self.betters = betters
+  def __init__(self, player_name):
+    self.name = player_name
+    self.wager = 0
+    self.number_of_hands = 1
 
-  def bet(self, bet, player: bool = False):
-    if player:
-      self.betters.append(player)
-    for aBetter in self.betters:
-      if aBetter.money >= bet:
-        aBetter.makeBet(bet)
-        self.wager += bet
-      else:
-        print(f'{aBetter.name} bet {bet} but only has {aBetter.money}')
+  def splithandBet(self, bet):
+    """Check if the player has enough money to split their hand"""
+    bet += bet
+    if self.name.money >= bet:
+      return True
+    else:
+      return False
 
+  """Check if the player's bet is valid"""
+  def playerBet(self, player_name, for_money: True):
+    if for_money:
+      
+      if player_name.money == 0:
+        print("You lost all your money gambeling ;( . . . . Come back later when you get more! :)")
+        return "no money"
+      
+      bet = int(input("How much would you like to bet? "))
+      while bet == 0:
+        print("You must bet something!")
+        bet = int(input("How much would you like to bet? "))
+
+      while bet > player_name.money:
+        print("Your wallet: ", player_name.money,"<  Your bet: ", bet)
+        bet = int(input("\nHow much would you like to bet? "))
+  
+    else:
+      bet=0
+
+    player_name.addMoney(-bet)
+    self.wager = bet
+    return bet
+  
   def collect(self, win, odds: int = 2):
     if win == 1: # Loss
       pass
     elif win == 2: # win
-      for aBetter in self.betters:
-        aBetter.addMoney(self.wager*odds/len(self.betters))
+      self.name.addMoney(self.wager*odds // self.number_of_hands )
     else: # push
-      for aBetter in self.betters:
-        aBetter.addMoney(self.wager/len(self.betters))
-    #self.wager=0
+      self.name.addMoney(self.wager // self.number_of_hands)
+
 ####################################################################################################################
 class Player:
   def __init__(self, name, money: int = 0):
@@ -190,14 +148,7 @@ class Player:
 
   def addMoney(self, amount: int):
     self.money += amount
-    return self.money
-
-  def makeBet(self, amount: int):
-    if amount > self.money:
-      print(f"{self.name} has {self.money} dollars. This is not enough to make this bet.")
-      return False
-    self.money -= amount
-    return self.money, True
+    return int(self.money)
 
   def addCard(self, card: Card, isKnown: bool = True):
     self.hand.append(card)
@@ -222,6 +173,7 @@ class Player:
       aces -= 1
       handsum -= 10
     return handsum
+
   def setHand(self, cards: "list[Card]", isKnown: bool = False):
     self.hand = cards
     self.knownCards = [isKnown for _ in self.hand]
@@ -242,12 +194,6 @@ class Player:
           image = card.image[idx] if self.knownCards[i] else card.cardBack[idx]
           print(image, end="")
       print()
-
-  def cardImages(self):#returns a list of surface objects
-    aList =[]
-    for card in self.hand:
-      aList.append(card.surfaceObj)
-    return aList
 
   def pairCheck(self): #returns a list of values that appear at least twice in the players hand
     pairlist=[]
@@ -287,15 +233,22 @@ class Player:
     self.hand = []
     self.knownCards = []
 
-  def splitHand(self):
-      if self.pairCheck() == True:
-          self.showHand()
-          split_decision = input("Would you like to split your hand? (y/n) ")
-          if split_decision == "y":
-              # take both cards and seperatly append them to hands_list
-              self.hands_lst.append(self.hand.pop(0))
-              self.hands_lst.append(self.hand.pop(0))
-              return True
+  def splitHand_detector(self, betting_box, bet):
+      if betting_box.splithandBet(bet) == False:
+        print("You do not have enough money to split your hand!\n")
+      else:
+        if self.pairCheck() == True:
+            self.showHand()
+            split_decision = input("Would you like to split your hand? (y/n) ")
+            if split_decision == "y":
+                # take one card out of your current hand and append it to hands_list
+                self.hands_lst.append(self.hand.pop(0))
+                self.addMoney(-bet)
+                bet+=bet
+                betting_box.wager=bet
+                betting_box.number_of_hands += 1
+                return True
+        return False
 
 ##################################################################################################################
 class Dealer:
@@ -348,9 +301,9 @@ class Dealer:
   # simple respond for dealer in single player with known hands 
   def dealerHand(self, house):
     houseHand = house.handSum()
+    
     while houseHand < 17: #force hit when below 17
       self.dealCards(1, [house])
-      cardCount(house, totalCard, deck.size) # add new card into card counting list
       houseHand = house.handSum()
     
   def bustCheck(self, player):
@@ -373,120 +326,33 @@ class Dealer:
     else:
       return 1 if houseHand <= 21 else 2
 
-# add the inital cards (4 cards - 1 face down card) to card count list at the beginning of every turn
-# input: the person hand list, totalCard list, and deck.size
-# output: 2 elements list of running count and true count value
-def cardCountIni(playerHand, totalCard, deckSize):
-  for card in playerHand:
-    count = 0
-    if card.value in [2,3,4,5,6]:
-      count = 1
-    elif card.value in [1,10,11]:
-      count = -1
-    totalCard.append(count)
-  runningCount = sum(totalCard)
-  trueCount = runningCount / (deckSize/52)
-  return [runningCount, trueCount]
-
-# add new card to card count list
-# input: the person hand list, totalCard list, and deck.size
-# output: 2 elements list of running count and true count value
-def cardCount(player, totalCard, deckSize):
-  count = 0
-  card = player.hand[-1]
-  if card.value in [2,3,4,5,6]:
-    count = 1
-  elif card.value in [1,10,11]:
-    count = -1
-  totalCard.append(count)
-  runningCount = sum(totalCard)
-  trueCount = runningCount / (deckSize/52)
-  return [runningCount, trueCount]
-# the terminal output of current card count
-# input: totalCard list and [runningCount, trueCount]
-def printCardCount(totalCard, cardCount):
-  print("Card counting value")
-  print(totalCard)
-  print("running count: " + str(cardCount[0]))
-  print("true count: " + str(cardCount[1]))
-def wait():
-  waiting = False
-  while not waiting:#makes certain the user has let go of the button
-    for event in pygame.event.get():
-      if event.type == pygame.KEYUP or event.type == pygame.MOUSEBUTTONUP:
-        waiting = True
-        pygame.event.clear()
-  while waiting:
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        pygame.quit()
-            
-      if event.type == pygame.KEYUP or event.type == pygame.MOUSEBUTTONUP:
-        waiting = False
-def handsDisplay(hidden=True):
-    #house cards
-    if not hidden:
-      x= 505 - 45*len(house.cardImages())
-      for acard in house.cardImages():
-        screen.blit(acard,(x,120))
-        x+=90
-    if hidden:
-      screen.blit(cardback,(500,120))
-      screen.blit(house.cardImages()[0],(400,120))
-    #player cards
-    x= 505 - 45*len(player_name.cardImages())
-    for acard in player_name.cardImages():
-      screen.blit(acard,(x,420))
-      x+=90
-#####################################################################################################################
+##########################################################################################################
 class BlackJack:
   
   def blackjackDecider(self, house, player_name, betting_box, dealer, silent: bool=False):
     blackjackOutcome = dealer.blackjackChecker(house, player_name)
-    if blackjackOutcome == 1:
+    if blackjackOutcome == 1 and silent == False:
       print("The house has blackjack. You lose!")
+      print("\nDealer's Hand: ", house.handSum()), house.showHand()
       betting_box.collect(blackjackOutcome)
       print(f"You now have ${player_name.money}")
-
-      screen.fill((background))
-      handsDisplay(False)#blits the cards to the screen
-      lwp = smallfont.render( "The house has blackjack. You lose!", True , color)
-      screen.blit(lwp, (300,320))
-      screen.blit(promptText, (350,385))
-      walletText = smallfont.render("reserve: $"+str(player_name.money),True, color)
-      screen.blit(walletText, (12,6))
-      pygame.display.update()
-      wait()
-
-    elif blackjackOutcome == 2:
+      return True
+    elif blackjackOutcome == 2 and silent == False:
       print("Blackjack! You win!")
+      print("\nYour Hand: ", player_name.handSum()), player_name.showHand()
       betting_box.collect(blackjackOutcome)
       print(f"You now have ${player_name.money}")
-
-      screen.fill((background))
-      handsDisplay(False)#blits the cards to the screen
-      lwp = smallfont.render( "Blackjack! You win!", True , color)
-      screen.blit(lwp, (340,320))
-      screen.blit(promptText, (350,385))
-      walletText = smallfont.render("reserve: $"+str(player_name.money),True, color)
-      screen.blit(walletText, (12,6))
-      pygame.display.update()
-      wait()
-
-    elif blackjackOutcome == 3:
+      return True
+    elif blackjackOutcome == 3 and silent == False:
       print("It's a push! You both have blackjack.")
+      print("\nYour Hand: ", player_name.handSum()), player_name.showHand()
+      print("\nDealer's Hand: ", house.handSum(hideSum=True)), house.showHand(showBack= True)
       betting_box.collect(blackjackOutcome)
       print(f"You now have ${player_name.money}")
-      
-      screen.fill((background))
-      handsDisplay(False)#blits the cards to the screen
-      lwp = smallfont.render( "It's a push! You both have blackjack.", True , color)
-      screen.blit(lwp, (240,320))
-      screen.blit(promptText, (350,385))
-      walletText = smallfont.render("reserve: $"+str(player_name.money),True, color)
-      screen.blit(walletText, (12,6))
-      pygame.display.update()
-      wait()
+      return True
+    elif blackjackOutcome == 2:
+      print("This hand is blackjack!")
+      return True
 
   def restartGame(self, house, player_name, dealer, deck, early_shuffle):
     print("Cards remaining in deck:", deck.size)
@@ -502,8 +368,9 @@ class BlackJack:
       dealer.resetDeck()
 
   def winnerCompare(self, house, player_name, dealer, betting_box):
-    #print("\n")
     winner = dealer.winnnerCheck(house, player_name)
+    print("wager  ", betting_box.wager)
+    print("# of hands   ", betting_box.number_of_hands)
     if winner == 2:
       print("You won!")
       betting_box.collect(winner)
@@ -544,22 +411,6 @@ class BlackJack:
     print("\nYour Hand: ", player_name.handSum()), player_name.showHand()
     print("\nDealer's Hand: ", house.handSum(hideSum=True)), house.showHand(showBack= True)
 
-  def playerBet(self, player_name, for_money):
-    if for_money:
-      """Player Bet"""
-      if player_name.money == 0:
-        print("You lost all your money gambeling ;( . . . . Come back later when you get more! :)")
-        return "no money"
-      bet = int(input("How much would you like to bet? "))
-      while bet == 0:
-        print("You must bet something!")
-        bet = int(input("How much would you like to bet? "))
-      while player_name.makeBet(bet) == False:
-        bet = int(input("\nHow much would you like to bet? "))
-    else:
-      bet=0
-    return bet
-  
   def configSettings(self, player_name):
     deck_num = 1
     for_money = True
@@ -603,215 +454,66 @@ class BlackJack:
       for dash in range(10):
         print(" .",end="", flush=True), time.sleep(.1)
       print()
-#####################################################################################################################
-"""Pygame Initializations"""
-import pygame 
-pygame.init() 
 
-  
-# screen size
-res = (1080,720) 
-  
-# opens up a window 
-screen = pygame.display.set_mode(res) 
-  
-
-color = (255,255,255) 
-color_light = (170,170,170) 
-color_dark = (100,100,100) 
-  
-width = screen.get_width() 
-height = screen.get_height() 
-
-#options
-deck_num = 1
-early_shuffle = False
-for_money=True#unused
-
-
-##menu
-
-smallfont = pygame.font.SysFont('Corbel',35)
-
-#to add a new button only lines marked with ~~~ must be added
-quit_text = smallfont.render('QUIT' , True , color) #   ~~~
-decks_text = smallfont.render('decks' , True , color)
-play_text = smallfont.render('PLAY' , True , color)
-early_text = smallfont.render('shuffle' , True , color)
-
-buttonlist=[        #[left,up,width,hight,text_offset]
-    [   [480,500,120,35,20],quit_text ],#   ~~~
-    [   [480,350,120,35,20],decks_text ],
-    [   [480,100,120,35,20],play_text ],
-    [   [480,200,120,35,10],early_text ]
-]
-
-
-in_menu=True 
-while in_menu: 
+  def splitHand_gameLoop(self, dealer, player_name, house, betting_box, bj, bet):
+      """
+      Handles the splitting of hands during the game.
       
-    for ev in pygame.event.get(): 
-          
-        if ev.type == pygame.QUIT: 
-            pygame.quit() 
-              
-        #checks if a mouse is clicked 
-        if ev.type == pygame.MOUSEBUTTONDOWN: 
-              
-            element = buttonlist[0]#first button   ~~~
-            if element[0][0] <= mouse[0] <= element[0][0]+element[0][2] and element[0][1] <= mouse[1] <= element[0][1]+element[0][3]:#   ~~~ 
-                pygame.quit()#   ~~~
+      :param dealer: The dealer object.
+      :param player_name: The player object.
+      :param house: The house object.
+      :param betting_box: The betting box object.
+      :param bj: The blackjack game object.
+      """
 
-            element = buttonlist[1]#second button
-            if element[0][0] <= mouse[0] <= element[0][0]+element[0][2] and element[0][1] <= mouse[1] <= element[0][1]+element[0][3]: 
-                if deck_num==1:
-                    deck_num=2
-                elif deck_num==2:
-                    deck_num=4
-                elif deck_num==4:
-                    deck_num=8
-                elif deck_num==8:
-                    deck_num=1
+      """After splitting, the player only has one card in their hand, so give them another card"""
+      dealer.dealCards(1, [player_name])
 
-            element = buttonlist[2]#third button
-            if element[0][0] <= mouse[0] <= element[0][0]+element[0][2] and element[0][1] <= mouse[1] <= element[0][1]+element[0][3]:
-                in_menu=False
-            
-            element = buttonlist[3]#fouth button
-            if element[0][0] <= mouse[0] <= element[0][0]+element[0][2] and element[0][1] <= mouse[1] <= element[0][1]+element[0][3]:
-                if not early_shuffle:
-                    early_shuffle = True
-                else:
-                  early_shuffle = False
+      """check to see if player can and wants to split their new hand"""
+      hand_num = 1
+      while len(player_name.hand) > 0: # while we are looking at a hand; do
 
-    # background color 
-    screen.fill((60,25,60)) 
-      
-    # stores the (x,y) coordinates into 
-    # the variable as a tuple 
-    mouse = pygame.mouse.get_pos() 
-      
-    # if mouse is hovered on a button it changes to a lighter shade 
-    for element in buttonlist:
-        if element[0][0] <= mouse[0] <= element[0][0]+element[0][2] and element[0][1] <= mouse[1] <= element[0][1]+element[0][3]: 
-            pygame.draw.rect(screen,color_light,[element[0][0],element[0][1],element[0][2],element[0][3]]) 
-          
-        else: 
-            pygame.draw.rect(screen,color_dark,[element[0][0],element[0][1],element[0][2],element[0][3]]) 
-      
-        # superimposing the prompt text onto our button 
-        screen.blit(element[1], (element[0][0]+element[0][4],element[0][1])) 
+        """If the new hand can be split again, continue to split if the player wants to. However, the player cannot exceed 4 total hands (3 split + their current hand)"""
+        while player_name.splitHand_detector(betting_box, bet) == True and len(player_name.completed_hands)+len(player_name.hands_lst) < 3:
+          dealer.dealCards(1, [player_name])
 
-    #button values displayed
-
-    #deck value
-    deckCount = smallfont.render( str(deck_num), True , color)
-    element = buttonlist[1]#second button
-    screen.blit(deckCount, (element[0][0]+element[0][4]+30,element[0][1]+40))
-    #shuffle style
-    if early_shuffle:
-        indeck_limit=52*deck_num//2
-    else:
-        indeck_limit=0
-    earlyValue = smallfont.render( "at: "+str(indeck_limit), True , color)
-    element = buttonlist[3]#fouth button
-    screen.blit(earlyValue, (element[0][0]+element[0][4]+10,element[0][1]+40))
-
-    pygame.display.update() 
-
-##game
-background=(0,60,60)
-screen.fill((background))
-pygame.display.update()
-player_name = "john"
-
-deck = Deck(cardSurfaceList,deck_num)
-deck.shuffle
-
-dealer = Dealer(deck)
-player_name = Player(player_name)
-player_name.addMoney(500)
-house = Player("house")
-
-totalCard = []
-
-promptText = smallfont.render( "Press/Click to continue.", True , color)
-betting = True
-while betting:
-
-    """Player Bet"""
-    if player_name.money == 0:
-        "You lost all your money gambeling ;( . . . . Come back later when you get more! :)"
-        break
-
-    wager="0"
-    asking_for_bet =True
-    print("suggest bet = (true count - 1) * betting unit")
-    while asking_for_bet:
-      for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-          pygame.quit()
-            
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_BACKSPACE:
-              if len(wager)>0 and wager != "0":
-                wager = wager[:-1]
-              if wager == "":
-                wager = "0"
-            elif event.key == pygame.K_RETURN:
-              if int(wager) <= player_name.money:
-                asking_for_bet = False
-            elif event.unicode.isdigit() :
-              if wager == "0":
-                wager = wager[:-1]
-              wager += event.unicode
-
-
-        screen.fill((background))
-        wager_text = smallfont.render( "wager: "+wager, True , color)
-        screen.blit(wager_text, (400,360))
-        walletText = smallfont.render("reserve: $"+str(player_name.money),True, color)
-        screen.blit(walletText, (12,6))
-        pygame.display.update()
-
-    bet = int(wager)
-    player_name.makeBet(bet)
-    betting_box = Betting_box(bet, [player_name])
-
-
-    #add the initial cards card counting array and print
-    cardCountIni(player_name.hand, totalCard, deck.size)
-    printCardCount(totalCard, cardCountIni(house.hand[:-1], totalCard, deck.size))
-
-
-    hit_stand = ""
-    while hit_stand =="":
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_h or event.key == pygame.K_j or event.key == pygame.K_k or event.key == pygame.K_l:
-                    hit_stand = "hit"
-                if event.key == pygame.K_f or event.key == pygame.K_d or event.key == pygame.K_s or event.key == pygame.K_a:
-                    hit_stand ="stand"
-
-    if hit_stand == "hit":
-        dealer.dealCards(1,[player_name])
-        print("\nYour Hand: ", player_name.handSum())
+        print("Hand "+ str(hand_num) + " sum:", player_name.handSum())
         player_name.showHand()
-        #add card value and print card count
-        printCardCount(totalCard, cardCount(player_name, totalCard, deck.size))
 
-        if dealer.bustCheck(player_name) == True:
-            print("\nBust!")
-            bust = True
-            
+        """Checks if the hand is blackjack. If not, then allow the player to complete the turn for that hand"""
+        if bj.blackjackDecider(house, player_name, betting_box, dealer, silent=True) == True:
+          player_name.completed_hands.append(player_name.hand)
+          player_name.hand = []
+        else:
+          bj.playerTurn(player_name, dealer)
+          player_name.completed_hands.append(player_name.hand)
+          player_name.hand = []
+        
+        """distinguish which hand is being looked at and slow down gameplay"""
+        bj.messageBetweenHands(player_name)
+        hand_num += 1 # keeps track of what hand is being looked at
+
+        """Grab the next splithand from hands_lst"""
+        if len(player_name.hands_lst) > 0:
+          player_name.hand.append(player_name.hands_lst.pop())
+          dealer.dealCards(1, [player_name])
+
+      """After the player is done, let the house complete its turn"""
+      bj.houseTurn(house, dealer)
+
+      """Compare house and player's hands to see who wins. Then handle win/loss interaction."""
+      hand_num = 1
+      for hand in player_name.completed_hands:
+        print(f"\nComparing hand {hand_num} against the house")
+        player_name.hand = hand
+        bj.winnerCompare(house, player_name, dealer, betting_box)
+        hand_num += 1
+
+      """After all hands have been compared with the house, clear the completed_hands list and reset number of hands to 1"""
+      player_name.completed_hands = []
+      betting_box.number_of_hands = 1
 #####################################################################################################################
 def blackjackGame():
-  """Pygame initialization"""
-  screen.fill((60,25,60))
-  pygame.display.update()
   """blackjack Class initialization"""
   bj = BlackJack()
 
@@ -829,138 +531,34 @@ def blackjackGame():
   player_name.addMoney(500)
   house = Player("house")
 
-  ####"""Game Loop"""####
+  betting_box = Betting_box(player_name)
+  """Game Loop"""
   betting = True
   while betting:
-    screen.fill((background))
-    playPrompt = smallfont.render( 'Press "h" to hit and "s" to stand', True , color)
-    screen.blit(playPrompt, (200,320))  
-    handsDisplay()#blits the cards to the screen
-    walletText = smallfont.render("reserve: $"+str(player_name.money),True, color)
-    screen.blit(walletText, (12,6))
-    pygame.display.update()
-
-    hand_num = 1 # at the top of the loop, we are always looking at hand number 1
-
-    """This catches and disrupts the normal game loop if the player is in the middle of playing their split hands"""
-    while len(player_name.hands_lst) > 0:
-      current_hand = []
-      current_hand.append(player_name.hands_lst.pop(0))
-      player_name.hand = current_hand # rotating which hand to look at from the hands_lst
-      dealer.dealCards(1, [player_name])
-      print("Hand "+ str(hand_num) + " sum:", player_name.handSum())
-      player_name.showHand()
-
-      """Checks if the hand is blackjack. If not, then allow the player to complete the turn for that hand"""
-      if bj.blackjackDecider(house, player_name, betting_box, dealer, silent=True) == True:
-        player_name.completed_hands.append(player_name.hand)
-      else:
-        bj.playerTurn(player_name, dealer)
-        player_name.completed_hands.append(player_name.hand)
       
-      """distinguish which hand is being looked at and slow down gameplay"""
-      bj.messageBetweenHands(player_name)
-      hand_num += 1 # keeps track of what hand is being looked at
-
-    """After the player is done, let the house complete its turn"""
-    if len(player_name.completed_hands) > 0:
-        bj.houseTurn(house, dealer)
-
-        """Compare house and player's hands to see who wins. Then handle win/loss interaction."""
-        hand_num = 1
-        for hand in player_name.completed_hands:
-          print(f"\nComparing hand {hand_num} against the house")
-          player_name.hand = hand
-          bj.winnerCompare(house, player_name, dealer, betting_box)
-          hand_num += 1
-
-        """After all hands have been compared with the house, clear the completed_hands list"""
-        player_name.completed_hands = []
-
-        """After all the hands have been gone through, ask if they want to play again"""
-        if bj.restartGame(house, player_name, dealer, deck, early_shuffle) == False:
-          break
-    ###NORMAL GAMELOOP####
-    else:
       """handle Player betting"""
-      bet = bj.playerBet(player_name, for_money)
+      bet = betting_box.playerBet(player_name, for_money)
       if bet == "no money":
         break 
-      else:
-        house.showHand()
-        
-      
-      """Compare house and player's hands to see who wins. Then handle win/loss interaction."""
-      print("\n")
-      #add the facedown card into the count
-      printCardCount(totalCard, cardCountIni(house.hand[:1], totalCard, deck.size))      
-      winner = dealer.winnnerCheck(house, player_name)
-      if winner == 2:
-        print("You won!")
-        betting_box.collect(winner)
-        print(f"You now have ${player_name.money}")
-
-        screen.fill((background))
-        handsDisplay(False)#blits the cards to the screen
-        resultText = smallfont.render( "You won!", True , color)
-        screen.blit(resultText, (320,300))
-        screen.blit(promptText, (320,350))
-        walletText = smallfont.render("reserve: $"+str(player_name.money),True, color)
-        screen.blit(walletText, (12,6))
-        pygame.display.update()
-        wait()
-      elif winner == 1:
-        print("You lost. The dealer won!")
-        betting_box.collect(winner)
-        print(f"You now have ${player_name.money}")
-
-        screen.fill((background))
-        handsDisplay(False)#blits the cards to the screen
-        resultText = smallfont.render( "You lost!", True , color)
-        screen.blit(resultText, (320,300))
-        screen.blit(promptText, (320,350))
-        walletText = smallfont.render("reserve: $"+str(player_name.money),True, color)
-        screen.blit(walletText, (12,6))
-        pygame.display.update()
-        wait()
-        betting_box = Betting_box(bet, [player_name])
                 
       """Give both the house and the player 2 cards to start the game"""
-      dealer.dealCards(2, [player_name, house])
-      
+      dealer.dealCards(2, [house, player_name])
+
       """check to see if someone has blackjack"""
       if bj.blackjackDecider(house, player_name, betting_box, dealer) == True:
         pass
 
       else:
-        """check to see if player can and wants to split their hand"""
-        if player_name.splitHand() == True:
-          pass # if they do, pass on normal game loop
+
+        """See if the player can and wants to split their hand"""
+        if player_name.splitHand_detector(betting_box, bet) == True:
+          bj.splitHand_gameLoop(dealer, player_name, house, betting_box, bj, bet)
+
         else:
         
           """Print both hands of the player and dealer"""
           bj.print_startingHands(house, player_name)
 
-        screen.fill((background))
-        handsDisplay(False)#blits the cards to the screen
-        resultText = smallfont.render( "It's a push!", True , color)
-        screen.blit(resultText, (320,300))
-        screen.blit(promptText, (320,350))
-        walletText = smallfont.render("reserve: $"+str(player_name.money),True, color)
-        screen.blit(walletText, (12,6))
-        pygame.display.update()
-        wait()
-
-    """"Clear hands"""
-    print("Cards remaining in deck:", deck.size)
-
-
-    house.clearHand()
-    player_name.clearHand()
-
-    if deck.size <=52*deck_num//2 and early_shuffle:
-      dealer.resetDeck()
-      totalCard = [] #reset the card count pile
           """while the player doesn't bust, allow them to choose to hit or pass"""
           bj.playerTurn(player_name, dealer)
 
@@ -970,10 +568,9 @@ def blackjackGame():
           """Compare house and player's hands to see who wins. Then handle win/loss interaction."""
           bj.winnerCompare(house, player_name, dealer, betting_box)
 
-          """Clear hands and ask if they want to play again"""
-      if len(player_name.hands_lst) == 0: # if you aren't in the middle of playing your split hands then give the option to quit or continue
+      """if you aren't in the middle of playing your split hands then give the option to quit or continue"""
+      if len(player_name.hands_lst) == 0: 
         if bj.restartGame(house, player_name, dealer, deck, early_shuffle) == False:
           break
 
 blackjackGame()
-
